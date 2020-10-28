@@ -1,5 +1,8 @@
 FROM scratch
 ADD centos-7-x86_64-docker.tar.xz /
+COPY mysql_init /tmp/mysql_init
+
+WORKDIR /tmp
 
 LABEL \
     org.label-schema.schema-version="1.0" \
@@ -31,19 +34,11 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Ce
 	chmod -R 0755 /var/www/html && \
 	chmod 0444 /var/www
 	
-RUN	cat > /tmp/mysql_init <<EOF
-	use mysql;
-	delete from mysql.user where user='root' and host!='localhost';
-	delete from mysql.user where user='anonymous';
-	update mysql.user set password=password('RootPassword') where user='root';
-	create database dede_data;
-	grant all privileges on dede_data.*  to 'dedeAdmin'@'%' identified by 'AdminPassword';
-	drop database test;
-	flush privileges;
-	\EOF && \
-	mysql -uroot < /tmp/mysql_init && \
+RUN	mysql -uroot < /tmp/mysql_init && \
 	rm -f /tmp/mysql_init && \
 	systemctl restart mariadb
+	
+WORKDIR /home
     
 EXPOSE 80
 
