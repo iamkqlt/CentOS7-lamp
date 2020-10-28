@@ -1,6 +1,7 @@
 FROM scratch
 ADD centos-7-x86_64-docker.tar.xz /
 COPY mysql_init /tmp/mysql_init
+COPY Centos-7.repo /tmp/Centos-7.repo
 
 WORKDIR /tmp
 
@@ -17,7 +18,8 @@ LABEL \
     
 VOLUME ["/var/www/html", "/var/lib/mysql"]
     
-RUN curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo && \
+RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak && \
+	cp /tmp/Centos-7.repo /etc/yum.repos.d/CentOS-Base.repo && \
     sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo && \
     yum upgrade -y && \
     yum install -y php php-gd php-mysql apache2 mariadb mariadb-server && \
