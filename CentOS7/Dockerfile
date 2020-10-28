@@ -18,16 +18,14 @@ LABEL \
     
 VOLUME ["/var/www/html", "/var/lib/mysql"]
     
-USER root
-
 RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak && \
 	cp /tmp/Centos-7.repo /etc/yum.repos.d/CentOS-Base.repo && \
     sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo && \
     yum install -y php php-gd php-mysql httpd mariadb mariadb-server && \
-    systemctl start httpd && \
-    systemctl enable httpd && \
-    systemctl start mariadb && \
-    systemctl enable mariadb && \
+    sudo systemctl start httpd && \
+    sudo systemctl enable httpd && \
+    sudo systemctl start mariadb && \
+    sudo systemctl enable mariadb && \
     find / | grep php.ini$ | xargs sed -i 's/^request_order = ".*"$/request_order = "CGP"/g' && \
     chown -R apache:apache /var/www && \
 	chmod -R 0755 /var/www/html && \
