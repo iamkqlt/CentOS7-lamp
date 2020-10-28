@@ -23,10 +23,6 @@ RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak &
     sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo && \
     yum upgrade -y && \
     yum install -y php php-gd php-mysql apache2 mariadb mariadb-server && \
-    sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config && \
-    systemctl start firewalld && \
-    systemctl enable firewalld && \
-    firewall-cmd --zone=public --add-port=80/tcp --permanent && \
     systemctl start httpd && \
     systemctl enable httpd && \
     systemctl start mariadb && \
